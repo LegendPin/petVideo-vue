@@ -25,30 +25,33 @@
                     <el-upload
                         class="head-pic-upload"
                         :action="uploadHeadPic()"
-                        :show-file-list="true"
+                        :show-file-list="false"
                         :on-success="handleHeadPicSuccess"
-                        accept=".jpg,.png,.jpeg">
-                        <img v-if="dataForm.headPic" src="dataForm.headPic" class="avatar">
+                        accept=".jpg,.png,.jpeg,.bmp,.gif">
+                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                 </el-col>
             </el-row>
             <el-form-item label="视频介绍：" prop="remark" style="margin-top: 25px">
-                <el-input type="textarea" :row="4"  class="vp-textarea"></el-input>
+                <el-input type="textarea" :row="4"  class="vp-textarea" v-model="dataForm.remark"></el-input>
             </el-form-item>
         </el-form>
-        <img v-if="1" src="/petfile/favicon.ico" class="avatar">
-        <el-button @click="getStatic(`/petfile/favicon.ico`)"></el-button>
-        <!--<el-card class="box-card" style="width: 50%;left: 100px;position: relative">-->
-            <!--<el-upload-->
-                <!--ref="upload"-->
-                <!--:show-file-list="true"-->
-                <!--:auto-upload="true"-->
-                <!--accept=".mp4,.avi,.rmvb,.rm,.mpeg,.3gp,.wmv,.flv">-->
-                <!--<el-button slot="trigger" size="small" type="primary">选取文件</el-button>-->
-                <!--<div slot="tip" class="el-upload__tip">仅支持.mp4,.avi,.rmvb,.rm,.mpeg,.3gp,.wmv,.flv格式</div>-->
-            <!--</el-upload>-->
-        <!--</el-card>-->
+        <el-card class="box-card" style="width: 50%;left: 100px;position: relative">
+            <el-upload
+                ref="upload-video"
+                :action="uploadVideo()"
+                :show-file-list="true"
+                :auto-upload="true"
+                :on-success="handleVideoSuccess"
+                :limit="1"
+                :on-exceed="handleVideoOver"
+                accept=".mp4,.avi,.rmvb,.rm,.mpeg,.3gp,.wmv,.flv">
+                <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                <div slot="tip" class="el-upload__tip">仅支持.mp4,.avi,.rmvb,.rm,.mpeg,.3gp,.wmv,.flv格式</div>
+            </el-upload>
+        </el-card>
+        <el-button type="primary" size="large" @click="publicVideo()" class="vp-btn-sumbmit">发布视频</el-button>
     </div>
 </template>
 
@@ -59,10 +62,11 @@
         data(){
             return {
                 tabList:[],          //视频分类列表
+                imageUrl:null,
                 dataForm:{
                     name: '',        //视频标题
                     type: '',        //视频分类
-                    filename: '',    //文件名称
+                    fileName: '',    //文件名称
                     fileUrl: '',     //文件地址
                     filePic: '',     //视频截图路径
                     remark: ''       //视频详细描述
@@ -100,31 +104,84 @@
                     }
                 })
             },
+            //视频提交按钮点击回调
+            publicVideo(){
+                //判断参数有效性
+                this.$refs['dataForm'].validate((valid) => {
+                    if (valid){
+                        if (this.dataForm.fileName === '' || this.dataForm.fileUrl === '' ||
+                            this.dataForm.fileName == null || this.dataForm.fileUrl == null ||
+                            this.dataForm.filePic == null || this.dataForm.filePic === ''){
+                            console.log("name: " + this.dataForm.fileName)
+                            console.log("url:" + this.dataForm.fileUrl)
+                            console.log("pic:" + this.dataForm.filePic)
+                            this.$message.warning("文件和头像不能为空")
+                            return;
+                        }
+                        this.$http({
+                            url: this.$http.adornUrl('/manage/videoinfo/save'),
+                            method: 'post',
+                            data: this.$http.adornData({
+                                name: this.dataForm.name,
+                                type: this.dataForm.type,
+                                fileName: this.dataForm.fileName,
+                                fileUrl: this.dataForm.fileUrl,
+                                remark: this.dataForm.remark,
+                                filePic: this.dataForm.filePic
+                            })
+                        }).then(({data}) => {
+                            if (data && data.code === 0) {
+                                this.$message.success("发布视频成功");
+                                this.$router.push({ name: 'home' }); //跳转回首页
+                            } else {
+                                this.$message.error(data.msg)
+                            }
+                        })
+                    }
+
+                })
+            },
             /********************文件操作相关函数**************************/
             //动态返回文件上传地址
             uploadHeadPic(){
                 return this.$http.adornUrl(`/manage/videoinfo/uploadHead`)+"?token="+Vue.cookie.get('token');
             },
-            handleHeadPicSuccess(data){
+            //视频截图上传成功回调
+            handleHeadPicSuccess(data, file){
                 if (data && data.code === 0) {
-                    this.dataForm.headPic = data.fileUrl;
-
-                    console.log(this.dataForm.headPic)
+                    this.imageUrl = URL.createObjectURL(file.raw);
+                    this.dataForm.filePic = data.fileUrl;
+                    console.log(this.dataForm.filePic)
                     this.$message({
                         message: '头像上传成功',
-                        type: 'success',
+                        type: 'success'
                     })
                 } else {
                     this.$message.error(data.msg)
                 }
             },
-
+            //构建视频文件请求路径
             uploadVideo(){
                 return this.$http.adornUrl(`/manage/videoinfo/uploadVideo`)+"?token="+Vue.cookie.get('token');
             },
-            //获取文件
-            getStatic(url){
-                window.location.href=this.$http.adornUrl(url);
+            //视频文件上传成功回调
+            handleVideoSuccess(data){
+                if (data && data.code === 0) {
+                    this.dataForm.fileName = data.filename;
+                    this.dataForm.fileUrl = data.fileUrl;
+                    console.log(this.dataForm.fileName);
+                    console.log(this.dataForm.fileUrl);
+                    this.$message({
+                        message: '视频上传成功',
+                        type: 'success'
+                    })
+                } else {
+                    this.$message.error(data.msg)
+                }
+            },
+            //文件数量超出回调
+            handleVideoOver(){
+                this.$message.warning('只能上传一个视频文件')
             }
         }
     }
@@ -141,7 +198,11 @@
         height: 150px;
         width: 84%;
     }
-
+    .vp-btn-sumbmit{
+        position: relative;
+        left: 20%;
+        margin-top: 50px;
+    }
     .avatar-uploader .el-upload {
         border: 1px dashed #d9d9d9;
         border-radius: 6px;

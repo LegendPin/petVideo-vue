@@ -1,15 +1,15 @@
 <template>
     <div class="mod-home">
-        <el-tabs v-mode="activeTab">
+        <el-tabs v-model="activeTab">
             <el-tab-pane label="全部" name="">
                 <el-row>
-                    <el-col :span="3" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 1 : 0">
+                    <el-col :span="3" v-for="(o, index) in videoList" :key="o.id" :offset="index > 0 ? 1 : 0">
                         <el-card :body-style="{ padding: '0px' }">
-                            <img class="image">
+                            <img class="image" :src="$http.adornUrl(o.filePic)">
                             <div style="padding: 14px;">
-                                <span>好吃的汉堡</span>
+                                <span>{{o.name}}</span>
                                 <div class="bottom clearfix">
-                                    <time class="time">{{ currentDate }}</time>
+                                    <time class="time">{{ o.createTime }}</time>
                                 </div>
                             </div>
                         </el-card>
@@ -22,13 +22,13 @@
                 :label="item.dictName"
                 :name="item.dictName">
                 <el-row>
-                    <el-col :span="3" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 1 : 0">
+                    <el-col :span="3" v-for="(o, index) in videoList" :key="o.id" :offset="index > 0 ? 1 : 0">
                         <el-card :body-style="{ padding: '0px' }">
-                            <img class="image">
+                            <img class="image" :src="$http.adornUrl(o.filePic)">
                             <div style="padding: 14px;">
-                                <span>好吃的汉堡</span>
+                                <span>{{o.name}}</span>
                                 <div class="bottom clearfix">
-                                    <time class="time">{{ currentDate }}</time>
+                                    <time class="time">{{ o.createTime }}</time>
                                 </div>
                             </div>
                         </el-card>
@@ -45,11 +45,15 @@
             return {
                 tabList: [],
                 videoList:[],
-                activeTab: ''
+                activeTab: '',
+                current: 1,
+                size: 20,
+                totalPage: 0
             }
         },
         activated(){
             this.getDictListByParent();
+            this.getVideoList();
         },
         methods:{
             //获取视频分类列表
@@ -67,7 +71,38 @@
                         this.$message.error(data.msg)
                     }
                 })
-            }
+            },
+            //获取视频列表
+            getVideoList(){
+                this.$http({
+                    url: this.$http.adornUrl('/manage/videoinfo/getVideoList'),
+                    method: 'get',
+                    params: this.$http.adornParams({
+                        current: this.current,
+                        size: this.size
+                    })
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        this.videoList = data.page.records;
+                        this.totalPage = data.page.total
+                    } else {
+                        this.videoList = [];
+                        this.totalPage = 0
+                        this.$message.error(data.msg)
+                    }
+                })
+            },
+            // 每页数
+            sizeChangeHandle (val) {
+                this.size = val
+                this.current = 1
+                this.getVideoList()
+            },
+            // 当前页
+            currentChangeHandle (val) {
+                this.current = val
+                this.getVideoList()
+            },
         }
     }
 </script>
