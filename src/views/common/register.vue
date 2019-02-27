@@ -11,11 +11,11 @@
             <el-form-item prop="password">
               <el-input v-model="dataForm.password" type="password" placeholder="密码"></el-input>
             </el-form-item>
-            <el-form-item>
-              <el-button class="login-btn-submit" type="primary" @click="dataFormSubmit()">登录</el-button>
+            <el-form-item prop="password">
+              <el-input v-model="dataForm.secondPassword" type="secondPassword" placeholder="确认密码"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button style="width: 100%" type="success" @click="gotoRegister()">注册</el-button>
+              <el-button style="width: 100%" type="success" @click="dataFormSubmit()">注册</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -32,14 +32,16 @@
         dataForm: {
           userName: '',
           password: '',
-          uuid: '',
-          captcha: ''
+          secondPassword: ''
         },
         dataRule: {
           userName: [
             { required: true, message: '帐号不能为空', trigger: 'blur' }
           ],
           password: [
+            { required: true, message: '密码不能为空', trigger: 'blur' }
+          ],
+          secondPassword: [
             { required: true, message: '密码不能为空', trigger: 'blur' }
           ]
         },
@@ -52,30 +54,29 @@
       // 提交表单
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
+          //判断两次密码是否相同
+          if (this.dataForm.password !== this.dataForm.secondPassword){
+            this.$message.warn("输入的两次密码不同!!!!!!")
+            return;
+          }
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl('/sys/login'),
+              url: this.$http.adornUrl('/sys/user/save'),
               method: 'post',
               data: this.$http.adornData({
                 'username': this.dataForm.userName,
-                'password': this.dataForm.password,
-                'uuid': this.dataForm.uuid,
-                'captcha': this.dataForm.captcha
+                'password': this.dataForm.password
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.$cookie.set('token', data.token)
-                this.$router.replace({ name: 'home' })
+                this.$message.success("注册成功")
+                this.$router.replace({ name: 'login' })
               } else {
-                this.getCaptcha()
                 this.$message.error(data.msg)
               }
             })
           }
         })
-      },
-      gotoRegister(){
-        this.$router.replace({ name: 'register' })
       }
     }
   }

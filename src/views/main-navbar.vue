@@ -2,24 +2,24 @@
   <nav class="site-navbar" :class="'site-navbar--' + navbarLayoutType">
     <div class="site-navbar__header">
       <h1 class="site-navbar__brand" @click="$router.push({ name: 'home' })">
-        <a class="site-navbar__brand-lg" href="javascript:;">人人快速开发平台</a>
-        <a class="site-navbar__brand-mini" href="javascript:;">人人</a>
+        <a class="site-navbar__brand-lg" href="javascript:;">宠物视频交友平台</a>
+        <!--<a class="site-navbar__brand-mini" href="javascript:;">人人</a>-->
       </h1>
     </div>
     <div class="site-navbar__body clearfix">
+      <!--<el-menu-->
+        <!--class="site-navbar__menu"-->
+        <!--mode="horizontal">-->
+        <!--<el-menu-item class="site-navbar__switch" index="0" @click="sidebarFold = !sidebarFold">-->
+          <!--<icon-svg name="zhedie"></icon-svg>-->
+        <!--</el-menu-item>-->
+      <!--</el-menu>-->
       <el-menu
-        class="site-navbar__menu"
-        mode="horizontal">
-        <el-menu-item class="site-navbar__switch" index="0" @click="sidebarFold = !sidebarFold">
-          <icon-svg name="zhedie"></icon-svg>
-        </el-menu-item>
-      </el-menu>
-      <el-menu
-        class="site-navbar__menu site-navbar__menu--right"
-        mode="horizontal">
-
-
-        <el-menu-item class="site-navbar__avatar" index="3">
+        class="site-navbar__menu site-navbar__menu--right" mode="horizontal">
+        <el-menu-item index="1" @click="$router.push({ name: 'home' })">首页</el-menu-item>
+        <el-menu-item index="2" @click="$router.push({ name: 'manage-video-public' })">发布视频</el-menu-item>
+        <el-menu-item index="3">个人中心</el-menu-item>
+        <el-menu-item class="site-navbar__avatar" index="4">
           <el-dropdown :show-timeout="0" placement="bottom">
             <span class="el-dropdown-link">
               <img src="~@/assets/img/avatar.png" :alt="userName">{{ userName }}

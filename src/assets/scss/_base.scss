@@ -174,7 +174,7 @@ img {
     text-transform: uppercase;
     white-space: nowrap;
     color: #fff;
-    
+
     &-lg,
     &-mini {
       margin: 0 5px;
@@ -312,9 +312,9 @@ img {
   &__wrapper {
     position: relative;
     padding-top: 50px;
-    margin-left: 230px;
+    //margin-left: 230px;
     min-height: 100%;
-    background: $content--background-color;
+    //background: $content--background-color;
   }
   &--tabs {
     padding: 55px 0 0;
