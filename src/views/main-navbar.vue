@@ -16,10 +16,11 @@
       <!--</el-menu>-->
       <el-menu
         class="site-navbar__menu site-navbar__menu--right" mode="horizontal">
-        <el-menu-item index="1" @click="$router.push({ name: 'home' })">首页</el-menu-item>
-        <el-menu-item index="2" @click="$router.push({ name: 'manage-video-public' })">发布视频</el-menu-item>
-        <el-menu-item index="3" @click="$router.push({ name: 'manage-pet-info' })">个人中心</el-menu-item>
-        <el-menu-item class="site-navbar__avatar" index="4">
+          <el-menu-item index="1" @click="$router.push({ name: 'manage-video-detail' })">测试</el-menu-item>
+        <el-menu-item index="2" @click="$router.push({ name: 'home' })">首页</el-menu-item>
+        <el-menu-item index="3" @click="$router.push({ name: 'manage-video-public' })">发布视频</el-menu-item>
+        <el-menu-item index="4" @click="$router.push({ name: 'manage-pet-info' })">个人中心</el-menu-item>
+        <el-menu-item class="site-navbar__avatar" index="5">
           <el-dropdown :show-timeout="0" placement="bottom">
             <span class="el-dropdown-link">
               <img src="~@/assets/img/avatar.png" :alt="userName">{{ userName }}

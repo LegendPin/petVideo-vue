@@ -22,6 +22,9 @@ if (process.env.NODE_ENV !== 'production') {
 // 挂载全局
 Vue.prototype.$http = httpRequest // ajax请求方法
 Vue.prototype.isAuth = isAuth     // 权限方法
+// require('videojs-contrib-hls/dist/videojs-contrib-hls');
+import VideoPlayer from 'vue-video-player'
+Vue.use(VideoPlayer);
 
 // 保存整站vuex本地储存初始状态
 window.SITE_CONFIG['storeState'] = cloneDeep(store.state)
