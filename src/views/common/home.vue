@@ -20,7 +20,7 @@
                 v-for="item in tabList"
                 :key="item.dictCode"
                 :label="item.dictName"
-                :name="item.dictName">
+                :name="item.dictCode.toString()">
                 <el-row>
                     <el-col :span="3" v-for="(o, index) in videoList" :key="o.id" :offset="index > 0 ? 1 : 0">
                         <el-card :body-style="{ padding: '0px' }">

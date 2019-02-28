@@ -1,6 +1,6 @@
 <template>
     <div class="vp-main">
-        <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="100px">
+        <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="100px">
             <el-row>
                 <el-col :span="12">
                     <el-form-item label="标题：" prop="name" style="margin-top: 50px">
@@ -60,19 +60,19 @@
     export default {
         name: "video-public",
         data(){
-            return {
-                tabList:[],          //视频分类列表
-                imageUrl:null,
-                dataForm:{
-                    name: '',        //视频标题
-                    type: '',        //视频分类
-                    fileName: '',    //文件名称
-                    fileUrl: '',     //文件地址
-                    filePic: '',     //视频截图路径
-                    remark: ''       //视频详细描述
-                },
-                dataRule: {
-                    name: [
+                        return {
+                            tabList:[],          //视频分类列表
+                            imageUrl:null,
+                            dataForm:{
+                                name: '',        //视频标题
+                                type: '',        //视频分类
+                                fileName: '',    //文件名称
+                                fileUrl: '',     //文件地址
+                                filePic: '',     //视频截图路径
+                                remark: ''       //视频详细描述
+                            },
+                            dataRule: {
+                                name: [
                         { required: true, message: '视频标题不能为空', trigger: 'blur' }
                     ],
                     type: [
