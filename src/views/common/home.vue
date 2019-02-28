@@ -1,11 +1,11 @@
 <template>
     <div class="mod-home">
-        <el-tabs v-model="activeTab">
-            <el-tab-pane label="全部" name="">
+        <el-tabs v-model="activeTab" @tab-click="tabChange">
+            <el-tab-pane label="全部" name="0">
                 <el-row>
                     <el-col :span="3" v-for="(o, index) in videoList" :key="o.id" :offset="index > 0 ? 1 : 0">
                         <el-card :body-style="{ padding: '0px' }">
-                            <img class="image" :src="$http.adornUrl(o.filePic)">
+                            <img class="image" :src="$http.adornUrl(o.filePic)" @click="gotoVideoDetail(o.id)">
                             <div style="padding: 14px;">
                                 <span>{{o.name}}</span>
                                 <div class="bottom clearfix">
@@ -24,7 +24,7 @@
                 <el-row>
                     <el-col :span="3" v-for="(o, index) in videoList" :key="o.id" :offset="index > 0 ? 1 : 0">
                         <el-card :body-style="{ padding: '0px' }">
-                            <img class="image" :src="$http.adornUrl(o.filePic)">
+                            <img class="image" :src="$http.adornUrl(o.filePic)" @click="gotoVideoDetail(o.id)">
                             <div style="padding: 14px;">
                                 <span>{{o.name}}</span>
                                 <div class="bottom clearfix">
@@ -45,9 +45,9 @@
             return {
                 tabList: [],
                 videoList:[],
-                activeTab: '',
+                activeTab: 0,
                 current: 1,
-                size: 20,
+                size: 100,
                 totalPage: 0
             }
         },
@@ -79,7 +79,8 @@
                     method: 'get',
                     params: this.$http.adornParams({
                         current: this.current,
-                        size: this.size
+                        size: this.size,
+                        type: this.activeTab
                     })
                 }).then(({data}) => {
                     if (data && data.code === 0) {
@@ -103,6 +104,20 @@
                 this.current = val
                 this.getVideoList()
             },
+            //跳转到视频详情页
+            gotoVideoDetail(id){
+                this.$router.push({
+                    path: '/manage/video-detail',
+                    query:{
+                        id: id
+                    }
+                })
+            },
+            //标签页改变事件
+            tabChange(){
+                console.log(this.activeTab)
+                this.getVideoList();
+            }
         }
     }
 </script>
@@ -130,6 +145,7 @@
     .image {
         width: 100%;
         display: block;
+        cursor: pointer;
     }
 
     .clearfix:before,

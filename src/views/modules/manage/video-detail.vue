@@ -1,86 +1,135 @@
 <template>
     <div>
-        <el-row>
-            <el-col :span="14" :offset="1">
-                <div style="width: 100%; height: 800px">
-                    <video-player
-                                   ref="videoPlayer"
-                                   :playsinline="true"
-                                   :options="playerOptions"
-                                   @play="onPlayerPlay($event)"
-                                   @pause="onPlayerPause($event)">
-                    </video-player>
-                </div>
+        <el-row style="margin-top: 20px">
+            <!--视频区-->
+            <el-col :span="14" :offset="2">
+                <el-card style="border: none;">
+                    <div slot="header" class="clearfix">
+                        <el-row>
+                            <el-col :span="4" :offset="10">
+                                <h2 style="width: 200px;">{{videoObj.name}}</h2>
+                            </el-col>
+                        </el-row>
+                    </div>
+                    <video v-if="videoSrc" :src="videoSrc" :poster="headSrc" controls="controls" class="vd-video"></video>
+                </el-card>
+                <!--视频描述区-->
+                <el-card class="vd-content-card">
+                    <p>{{videoObj.remark}}</p>
+                </el-card>
+                <!--评论区-->
+                <el-card class="vd-comment-card">
+                    <!--评论提交区-->
+                    <el-row>
+                        <el-col :span="22" :offset="2">
+                            <el-row>
+                                <el-col :span="21">
+                                    <el-input type="textarea" :row="4"  class="vp-textarea"></el-input>
+                                </el-col>
+                                <el-col :span="3">
+                                    <el-button class="vd-comment-btn">发表评论</el-button>
+                                </el-col>
+                            </el-row>
+                        </el-col>
+                    </el-row>
+                    <!--评论列表-->
+                    <el-row style="margin-top: 20px">
+                        <!--头像区-->
+                        <el-col :span="2"></el-col>
+                        <el-col :span="22"></el-col>
+                    </el-row>
+                </el-card>
             </el-col>
         </el-row>
     </div>
 </template>
 
 <script>
-    import videoPlayer from 'vue-video-player';
-    // 第一个是videoJs的样式，后一个是vue-video-player的样式，因为考虑到我其他业务组件可能也会用到视频播放，所以就放在了main.js内
-    require('video.js/dist/video-js.css')
-    require('vue-video-player/src/custom-theme.css')
     export default {
         name: "video-detail",
         data(){
             return {
-                playerOptions: {
-                    //playbackRates: [0.7, 1.0, 1.5, 2.0], //播放速度
-                    autoplay: false, //如果true,浏览器准备好时开始回放。
-                    muted: false, // 默认情况下将会消除任何音频。
-                    loop: false, // 导致视频一结束就重新开始。
-                    preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
-                    language: 'zh-CN',
-                    aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
-                    fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
-                    sources: [{
-                        type: "video/mp4",
-                        src: "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4" //你的视频地址（必填）
-                    }],
-                    //poster: "poster.jpg", //你的封面地址
-                    width: document.documentElement.clientWidth,
-                    notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
-                }
+                videoId: '',
+                //视频路径地址
+                videoSrc: '',
+                //视频截屏地址
+                headSrc: '',
+                //视频结构体
+                videoObj: {}
             }
         },
         components: {
-            videoPlayer
         },
         computed: {
-            // player() {
-            //     return this.$refs.videoPlayer.player
-            // }
         },
         activated(){
+            this.videoId = this.$route.query.id;
             this.getVideoById();
         },
         methods:{
             getVideoById(){
+                if (this.videoId == null){
+                    this.$message.error("id无效，请后退后重试")
+                    return;
+                }
                 this.$http({
-                    url: this.$http.adornUrl('/manage/videoinfo/info/1'),
+                    url: this.$http.adornUrl(`/manage/videoinfo/info/${this.videoId}`),
                     method: 'get',
                     params: this.$http.adornParams({})
                 }).then(({data}) => {
                     if (data && data.code === 0) {
-                        let obj = data.videoInfo;
-                        this.playerOptions.sources.src = this.$http.adornUrl(obj.fileUrl)
-                        console.log(this.playerOptions.sources.src)
+                        this.videoObj = data.videoInfo;
+                        this.videoSrc = this.$http.adornUrl(this.videoObj.fileUrl)
+                        this.headSrc = this.$http.adornUrl(this.videoObj.filePic)
                     } else {
                         this.$message.error(data.msg)
                     }
                 })
-            },
-            onPlayerPlay(player) {
-                console.log("play");
-            },
-            onPlayerPause(player){
-                console.log("pause");
             },
         }
     }
 </script>
 
 <style scoped>
+    .vd-video{
+        display: block;
+        width: 1024px;
+        height: 800px;
+        object-fit: fill;
+    }
+
+    .vp-textarea >>> .el-textarea__inner{
+        height: 120px;
+        width: 100%;
+    }
+    .vd-comment-btn{
+        margin-left: 10px;
+        padding: 5px 10px;
+        text-align: center;
+        color: #fff;
+        height: 120px;
+        font-size: 18px;
+        width: 100%;
+        background-color: #00b5e5;
+    }
+    .vd-content-card{
+        height: 100px;
+        width: 90%;
+        position: relative;
+        left: 5%;
+        border-bottom: 1px solid #ebeef5;
+        border-top: 1px solid #ebeef5;
+        border-left: none;
+        border-right: none;
+    }
+
+    .vd-comment-card{
+        width: 100%;
+        border-bottom: 1px solid #ebeef5;
+        border-top: 1px solid #ebeef5;
+        border-left: none;
+        border-right: none;
+    }
+
 
 </style>
