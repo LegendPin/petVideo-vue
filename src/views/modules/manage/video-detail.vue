@@ -66,7 +66,10 @@
                             <img v-else src="~@/assets/img/avatar.png">
                         </el-col>
                         <el-col :span="18">
-                            <div >{{authorObj.name}}</div>
+                            <div>
+                                <span style="margin-right: 5px">{{authorObj.name}}</span>
+                                <el-button size="small">发送消息</el-button>
+                            </div>
                             <div style="margin-top: 5px">{{authorObj.remark}}</div>
                         </el-col>
                     </el-row>
