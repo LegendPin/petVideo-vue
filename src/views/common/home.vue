@@ -4,7 +4,7 @@
             <el-tab-pane label="全部" name="0">
                 <el-row>
                     <el-col :span="3" v-for="(o, index) in videoList" :key="o.id" :offset="index > 0 ? 1 : 0">
-                        <el-card :body-style="{ padding: '0px' }">
+                        <el-card :body-style="{ padding: '0px' }" >
                             <img class="image" :src="$http.adornUrl(o.filePic)" @click="gotoVideoDetail(o.id)">
                             <div style="padding: 14px;">
                                 <span>{{o.name}}</span>
@@ -36,6 +36,17 @@
                 </el-row>
             </el-tab-pane>
         </el-tabs>
+        <!--翻页控件，只有当总数大于100时才会出现-->
+        <el-pagination
+            v-if="totalPage > 100"
+            @size-change="sizeChangeHandle"
+            @current-change="currentChangeHandle"
+            :current-page="current"
+            :page-sizes="[10, 20, 50, 100]"
+            :page-size="size"
+            :total="totalPage"
+            layout="total, sizes, prev, pager, next, jumper">
+        </el-pagination>
     </div>
 </template>
 
@@ -144,6 +155,7 @@
 
     .image {
         width: 100%;
+        height: 180px;
         display: block;
         cursor: pointer;
     }

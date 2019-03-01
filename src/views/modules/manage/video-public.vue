@@ -153,7 +153,7 @@
                     this.dataForm.filePic = data.fileUrl;
                     console.log(this.dataForm.filePic)
                     this.$message({
-                        message: '头像上传成功',
+                        message: '封面上传成功',
                         type: 'success'
                     })
                 } else {
