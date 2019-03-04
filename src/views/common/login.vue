@@ -67,7 +67,6 @@
                 this.$cookie.set('token', data.token)
                 this.$router.replace({ name: 'home' })
               } else {
-                this.getCaptcha()
                 this.$message.error(data.msg)
               }
             })

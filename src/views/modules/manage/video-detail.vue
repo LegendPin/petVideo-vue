@@ -68,7 +68,7 @@
                         <el-col :span="18">
                             <div>
                                 <span style="margin-right: 5px">{{authorObj.name}}</span>
-                                <el-button size="small">发送消息</el-button>
+                                <el-button size="small" @click="sendMessage">发送消息</el-button>
                             </div>
                             <div style="margin-top: 5px">{{authorObj.remark}}</div>
                         </el-col>
@@ -261,6 +261,19 @@
                 this.getCommentList();
                 this.getVideoList();
             },
+            //发送消息按钮回调
+            sendMessage(){
+                this.$http({
+                    url: this.$http.adornUrl('/manage/petChat/createChatRelation'),
+                    method: 'get',
+                    params: this.$http.adornParams({})
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                    } else {
+                        this.$message.error(data.msg)
+                    }
+                })
+            }
 
         }
     }
