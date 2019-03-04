@@ -38,7 +38,7 @@ const mainRoutes = {
         { path: '/theme', component: _import('common/theme'), name: 'theme', meta: { title: '主题' } },
         { path: '/manage/video-public', component: _import('modules/manage/video-public'), name: 'manage-video-public', meta: { title: '发布视频' } },
         { path: '/manage/video-detail', component: _import('modules/manage/video-detail'), name: 'manage-video-detail', meta: { title: '视频详情页' } },
-        { path: '/manage/user-msg', component: _import('modules/manage/user-msg'), name: 'manage-user-msg', meta: { title: '评论详情页' } },
+        { path: '/manage/chat-win', component: _import('modules/manage/chat-win'), name: 'manage-chat-win', meta: { title: '聊天页' } },
         { path: '/manage/pet-info', component: _import('modules/manage/pet-info'), name: 'manage-pet-info', meta: { title: '个人中心' } }
     ],
     beforeEnter (to, from, next) {

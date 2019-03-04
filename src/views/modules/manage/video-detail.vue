@@ -117,6 +117,8 @@
                 authorObj:{},
                 //视频列表
                 videoList:{},
+                //当前用户信息
+                userInfo:{}
             }
         },
         components: {
@@ -128,6 +130,7 @@
             this.getVideoById();
             this.getCommentList();
             this.getVideoList();
+            this.getCurrentUser();
         },
         methods:{
             //根据视频ID获取视频内容
@@ -151,7 +154,7 @@
                     }
                 })
             },
-            //获取当前用户信息
+            //获取用户
             getAuthor(id){
                 this.$http({
                     url: this.$http.adornUrl(`/manage/petInfo/infoByUserId`),
@@ -162,6 +165,20 @@
                 }).then(({data}) => {
                     if (data && data.code === 0) {
                         this.authorObj= data.info;
+                    } else {
+                        this.$message.error(data.msg)
+                    }
+                })
+            },
+            //获取当前用户信息
+            getCurrentUser(){
+                this.$http({
+                    url: this.$http.adornUrl(`/manage/petInfo/info`),
+                    method: 'get',
+                    params: this.$http.adornParams({})
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        this.userInfo= data.info;
                     } else {
                         this.$message.error(data.msg)
                     }
@@ -263,16 +280,30 @@
             },
             //发送消息按钮回调
             sendMessage(){
-                this.$http({
-                    url: this.$http.adornUrl('/manage/petChat/createChatRelation'),
-                    method: 'get',
-                    params: this.$http.adornParams({})
-                }).then(({data}) => {
-                    if (data && data.code === 0) {
-                    } else {
-                        this.$message.error(data.msg)
-                    }
-                })
+                //判断用户是否是自己，如果是自己，直接进入聊天界面
+                if (this.userInfo.id === this.authorObj.id){
+                    this.$router.push({
+                        path: '/manage/chat-win'
+                    })
+                } else {
+                    //非自己，则先创建两个聊天关系，再进入聊天界面
+                    this.$http({
+                        url: this.$http.adornUrl('/manage/petChat/createChatRelation'),
+                        method: 'get',
+                        params: this.$http.adornParams({
+                            userOne: this.userInfo.id,
+                            userTwo: this.authorObj.id
+                        })
+                    }).then(({data}) => {
+                        if (data && data.code === 0) {
+                            this.$router.push({
+                                path: '/manage/chat-win'
+                            })
+                        } else {
+                            this.$message.error(data.msg)
+                        }
+                    })
+                }
             }
 
         }
