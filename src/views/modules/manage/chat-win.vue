@@ -64,7 +64,9 @@
                 this.$http({
                     url: this.$http.adornUrl('/manage/petChat/getChatUserList'),
                     method: 'get',
-                    params: this.$http.adornParams({})
+                    params: this.$http.adornParams({
+                        id: this.userInfo.id
+                    })
                 }).then(({data}) => {
                     if (data && data.code === 0) {
                         this.chatList = data.list;

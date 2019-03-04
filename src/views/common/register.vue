@@ -11,8 +11,8 @@
             <el-form-item prop="password">
               <el-input v-model="dataForm.password" type="password" placeholder="密码"></el-input>
             </el-form-item>
-            <el-form-item prop="password">
-              <el-input v-model="dataForm.secondPassword" type="secondPassword" placeholder="确认密码"></el-input>
+            <el-form-item prop="secondPassword">
+              <el-input v-model="dataForm.secondPassword" type="password" placeholder="确认密码"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button style="width: 100%" type="success" @click="dataFormSubmit()">注册</el-button>

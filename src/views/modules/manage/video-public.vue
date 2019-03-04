@@ -60,19 +60,19 @@
     export default {
         name: "video-public",
         data(){
-                        return {
-                            tabList:[],          //视频分类列表
-                            imageUrl:null,
-                            dataForm:{
-                                name: '',        //视频标题
-                                type: '',        //视频分类
-                                fileName: '',    //文件名称
-                                fileUrl: '',     //文件地址
-                                filePic: '',     //视频截图路径
-                                remark: ''       //视频详细描述
-                            },
-                            dataRule: {
-                                name: [
+            return {
+                tabList:[],          //视频分类列表
+                imageUrl:null,
+                dataForm:{
+                    name: '',        //视频标题
+                    type: '',        //视频分类
+                    fileName: '',    //文件名称
+                    fileUrl: '',     //文件地址
+                    filePic: '',     //视频截图路径
+                    remark: ''       //视频详细描述
+                },
+                dataRule: {
+                    name: [
                         { required: true, message: '视频标题不能为空', trigger: 'blur' }
                     ],
                     type: [
@@ -86,6 +86,9 @@
         },
         activated(){
             this.getDictListByParent();
+            if (this.$refs['dataForm'] !== undefined){
+                this.$refs['dataForm'].resetFields()
+            }
         },
         methods: {
             //获取视频分类列表
