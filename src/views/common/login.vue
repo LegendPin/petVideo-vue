@@ -93,12 +93,12 @@
      position: fixed;
      top: 0;
      left: 0;
-     z-index: -1;
+     /*z-index: -1;*/
      width: 100%;
      height: 100%;
      content: "";
      background-image: url(~@/assets/img/login_bg.jpg);
-     background-size: cover;
+     background-size: contain;
    }
   .site-content__wrapper {
     position: absolute;
@@ -139,7 +139,8 @@
     padding: 150px 60px 180px;
     width: 470px;
     min-height: 100%;
-    background-color: #fff;
+    background-color: #f4f4f4;
+      /*background-color: #82848a;*/
   }
   .login-title {
     font-size: 16px;
