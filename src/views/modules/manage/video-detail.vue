@@ -131,6 +131,8 @@
             this.getCommentList();
             this.getVideoList();
             this.getCurrentUser();
+            //新增播放记录
+            this.addPlayRecord();
         },
         methods:{
             //根据视频ID获取视频内容
@@ -182,6 +184,18 @@
                     } else {
                         this.$message.error(data.msg)
                     }
+                })
+            },
+            //新增播放记录
+            addPlayRecord(){
+                this.$http({
+                    url: this.$http.adornUrl(`/manage/playrecord/save`),
+                    method: 'post',
+                    data: this.$http.adornData({
+                        videoId: this.videoId
+                    })
+                }).then(({data}) => {
+                    console.log("新增播放记录成功")
                 })
             },
             //提交评论

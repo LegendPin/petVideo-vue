@@ -35,6 +35,22 @@
                     </el-col>
                 </el-row>
             </el-tab-pane>
+            <el-tab-pane label="个人视频" name="9999">
+                <el-row>
+                    <el-col :span="3" v-for="(o, index) in videoList" :key="o.id" :offset="index > 0 ? 1 : 0">
+                        <el-card :body-style="{ padding: '0px' }" >
+                            <img class="image" :src="$http.adornUrl(o.filePic)" @click="gotoVideoEdit(o.id)">
+                            <div style="padding: 14px;">
+                                <span>{{o.name}}</span>
+                                <el-button style="float: right;line-height: 0.3;" type="danger" size="mini" @click="deleteVideo(o.id)">删除</el-button>
+                                <div class="bottom clearfix">
+                                    <time class="time">{{ o.createTime }}</time>
+                                </div>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+            </el-tab-pane>
         </el-tabs>
         <!--翻页控件，只有当总数大于100时才会出现-->
         <el-pagination
@@ -59,14 +75,31 @@
                 activeTab: 0,
                 current: 1,
                 size: 100,
-                totalPage: 0
+                totalPage: 0,
+                //当前用户信息
+                userInfo:{}
             }
         },
         activated(){
+            this.getCurrentUser();
             this.getDictListByParent();
             this.getVideoList();
         },
         methods:{
+            //获取当前用户信息
+            getCurrentUser(){
+                this.$http({
+                    url: this.$http.adornUrl(`/manage/petInfo/info`),
+                    method: 'get',
+                    params: this.$http.adornParams({})
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        this.userInfo= data.info;
+                    } else {
+                        this.$message.error(data.msg)
+                    }
+                })
+            },
             //获取视频分类列表
             getDictListByParent(){
                 this.$http({
@@ -124,10 +157,75 @@
                     }
                 })
             },
+            //获取当前用户的视频列表
+            getCurrentUserVideos(){
+                this.$http({
+                    url: this.$http.adornUrl('/manage/videoinfo/getVideoList'),
+                    method: 'get',
+                    params: this.$http.adornParams({
+                        current: this.current,
+                        size: this.size,
+                        petId: this.userInfo.id
+                    })
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        this.videoList = data.page.records;
+                        this.totalPage = data.page.total
+                    } else {
+                        this.videoList = [];
+                        this.totalPage = 0
+                        this.$message.error(data.msg)
+                    }
+                })
+            },
             //标签页改变事件
             tabChange(){
                 console.log(this.activeTab)
-                this.getVideoList();
+                if (this.activeTab == '9999'){
+                    this.getCurrentUserVideos();
+                } else {
+                    this.getVideoList();
+                }
+
+            },
+            //进入视频编辑页面
+            gotoVideoEdit(id){
+                console.log(id)
+                this.$router.push({
+                    path: '/manage/video-edit',
+                    query:{
+                        id: id
+                    }
+                })
+            },
+            //删除视频
+            deleteVideo(id){
+                //封装数组型ID
+                let ids = [id];
+                this.$confirm(`确认删除该视频？`, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$http({
+                        url: this.$http.adornUrl('/manage/videoinfo/delete'),
+                        method: 'post',
+                        data: this.$http.adornData(ids, false)
+                    }).then(({data}) => {
+                        if (data && data.code === 0) {
+                            this.$message({
+                                message: '删除成功',
+                                type: 'success',
+                                duration: 1000,
+                                onClose: () => {
+                                    this.getCurrentUserVideos()
+                                }
+                            })
+                        } else {
+                            this.$message.error(data.msg)
+                        }
+                    })
+                })
             }
         }
     }
