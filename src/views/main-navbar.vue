@@ -13,7 +13,7 @@
                 <el-menu-item index="1" @click="$router.push({ name: 'home' })">首页</el-menu-item>
                 <el-submenu index="2">
                     <template slot="title">观看历史</template>
-                    <el-menu-item v-for="item in playRecords" :key="item.id" :index="item.id">
+                    <el-menu-item v-for="item in playRecords" :key="item.id" :index="item.id.toString()">
                         <a @click="gotoVideoDetail(item.videoId)">{{item.name}}</a>
                     </el-menu-item>
                 </el-submenu>

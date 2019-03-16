@@ -3,7 +3,7 @@
         <el-tabs v-model="activeTab" @tab-click="tabChange">
             <el-tab-pane label="全部" name="0">
                 <el-row>
-                    <el-col :span="3" v-for="(o, index) in videoList" :key="o.id" :offset="index > 0 ? 1 : 0">
+                    <el-col :span="3" v-for="(o, index) in videoList" :key="o.id" :offset="1">
                         <el-card :body-style="{ padding: '0px' }" >
                             <img class="image" :src="$http.adornUrl(o.filePic)" @click="gotoVideoDetail(o.id)">
                             <div style="padding: 14px;">
@@ -22,7 +22,7 @@
                 :label="item.dictName"
                 :name="item.dictCode.toString()">
                 <el-row>
-                    <el-col :span="3" v-for="(o, index) in videoList" :key="o.id" :offset="index > 0 ? 1 : 0">
+                    <el-col :span="3" v-for="(o, index) in videoList" :key="o.id" :offset="1">
                         <el-card :body-style="{ padding: '0px' }">
                             <img class="image" :src="$http.adornUrl(o.filePic)" @click="gotoVideoDetail(o.id)">
                             <div style="padding: 14px;">
@@ -37,7 +37,7 @@
             </el-tab-pane>
             <el-tab-pane label="个人视频" name="9999">
                 <el-row>
-                    <el-col :span="3" v-for="(o, index) in videoList" :key="o.id" :offset="index > 0 ? 1 : 0">
+                    <el-col :span="3" v-for="(o, index) in videoList" :key="o.id" :offset="1">
                         <el-card :body-style="{ padding: '0px' }" >
                             <img class="image" :src="$http.adornUrl(o.filePic)" @click="gotoVideoEdit(o.id)">
                             <div style="padding: 14px;">
@@ -83,7 +83,7 @@
         activated(){
             this.getCurrentUser();
             this.getDictListByParent();
-            this.getVideoList();
+            this.tabChange();
         },
         methods:{
             //获取当前用户信息
@@ -141,12 +141,12 @@
             sizeChangeHandle (val) {
                 this.size = val
                 this.current = 1
-                this.getVideoList()
+                this.tabChange()
             },
             // 当前页
             currentChangeHandle (val) {
                 this.current = val
-                this.getVideoList()
+                this.tabChange()
             },
             //跳转到视频详情页
             gotoVideoDetail(id){

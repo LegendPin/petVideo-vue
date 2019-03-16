@@ -33,7 +33,7 @@
                             :action="uploadHeadPic()"
                             :show-file-list="false"
                             :on-success="handleHeadPicSuccess"
-                            accept=".jpg,.png,.jpeg,.bmp,.gif">
+                            accept=".jpg,.png,.jpeg,.bmp">
                             <img v-if="imageUrl" :src="imageUrl" class="avatar">
                             <img v-else-if="dataForm.headPic" :src="$http.adornUrl(dataForm.headPic)" class="avatar">
                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>

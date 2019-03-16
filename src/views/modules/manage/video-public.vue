@@ -23,6 +23,7 @@
                 </el-col>
                 <el-col :span="5" :offset="5">
                     <el-upload
+                        ref="uploadHeadPic"
                         class="head-pic-upload"
                         :action="uploadHeadPic()"
                         :show-file-list="false"
@@ -39,7 +40,7 @@
         </el-form>
         <el-card class="box-card" style="width: 50%;left: 100px;position: relative">
             <el-upload
-                ref="upload-video"
+                ref="uploadVideo"
                 :action="uploadVideo()"
                 :show-file-list="true"
                 :auto-upload="true"
@@ -48,7 +49,6 @@
                 :on-exceed="handleVideoOver"
                 accept=".mp4,.avi,.rmvb,.rm,.mpeg,.3gp,.wmv,.flv">
                 <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-                <div slot="tip" class="el-upload__tip">仅支持.mp4,.avi,.rmvb,.rm,.mpeg,.3gp,.wmv,.flv格式</div>
             </el-upload>
         </el-card>
         <el-button type="primary" size="large" @click="publicVideo()" class="vp-btn-sumbmit">发布视频</el-button>
@@ -89,6 +89,8 @@
             if (this.$refs['dataForm'] !== undefined){
                 this.$refs['dataForm'].resetFields()
             }
+            this.$refs.uploadHeadPic.clearFiles();
+            this.$refs.uploadVideo.clearFiles();
         },
         methods: {
             //获取视频分类列表
