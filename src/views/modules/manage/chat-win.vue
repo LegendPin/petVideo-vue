@@ -16,7 +16,8 @@
                 </el-header>
                 <el-main v-show="tabUser !=null && tabUser !== ''" id="chatContent">
                     <el-row v-for="item in chatRecordList" :key="item.id"
-                            :class="userInfo.name===item.sendUser?'message-box-owner':'message-box-sender'" >
+                            class="message-box-sender">
+                            <!--:class="userInfo.name===item.sendUser?'message-box-owner':'message-box-sender'" >-->
                         <div style="margin-bottom: 5px;margin-top: 5px;margin-left: 10px">
                             <span style="margin-right: 10px">{{item.sendUser}}</span>
                             <span>{{item.createTime}}</span>
@@ -180,7 +181,8 @@
     .message-box-owner{
         margin-bottom: 10px;
         min-height: 50px;
-        width: 80%;
+        width: 100%;
+        display: block;
         float: right;
         background-color: #6ce26c;
     }
@@ -189,6 +191,7 @@
         margin-bottom: 10px;
         min-height: 50px;
         width: 80%;
+        display: block;
         background-color: #f4f4f4;
     }
 
