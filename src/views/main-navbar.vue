@@ -21,9 +21,10 @@
                 <el-menu-item index="5" @click="$router.push({ name: 'manage-pet-info' })">个人中心</el-menu-item>
                 <el-menu-item class="site-navbar__avatar" index="5">
                     <el-dropdown :show-timeout="0" placement="bottom">
-            <span class="el-dropdown-link">
-              <img src="~@/assets/img/avatar.png" :alt="userName">{{ userName }}
-            </span>
+                    <span class="el-dropdown-link">
+                        <img v-if="userInfo.headPic" :src="$http.adornUrl(userInfo.headPic)">
+                        <img v-else src="~@/assets/img/avatar.png" :alt="userName">{{ userName }}
+                    </span>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item @click.native="updatePasswordHandle()">修改密码</el-dropdown-item>
                             <el-dropdown-item @click.native="logoutHandle()">退出</el-dropdown-item>
@@ -46,6 +47,8 @@
                 updatePassowrdVisible: false,
                 //播放记录列表
                 playRecords: [],
+                //用户信息
+                userInfo:{}
             }
         },
         components: {
@@ -53,6 +56,7 @@
         },
         mounted(){
             this.getPlayRecord();
+            this.getCurrentUser();
         },
         computed: {
             navbarLayoutType: {
@@ -71,6 +75,20 @@
             }
         },
         methods: {
+            //获取当前用户信息
+            getCurrentUser(){
+                this.$http({
+                    url: this.$http.adornUrl(`/manage/petInfo/info`),
+                    method: 'get',
+                    params: this.$http.adornParams({})
+                }).then(({data}) => {
+                    if (data && data.code === 0) {
+                        this.userInfo= data.info;
+                    } else {
+                        this.$message.error(data.msg)
+                    }
+                })
+            },
             //获取当前用户的最近五条观看记录
             getPlayRecord(){
                 this.$http({
